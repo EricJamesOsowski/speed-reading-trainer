@@ -13,7 +13,8 @@ const InputBox = () => {
     const [wordsPerGroup, setWordsPerGroup] = useState(1);
 
     const handleClose = () => setShow(false);
-    var counter = 0;
+    var startIndex = 0;
+
 
     function handleShow() {
         setShow(true);
@@ -21,13 +22,32 @@ const InputBox = () => {
     }
 
     function updateWord() {
-        counter = 0;
         var newText = text.split(" ");
 
+        //PSUEEEEDOUUUUUUUUUUCCCKKKKK
+
+
         setInterval(function () {
-            setDisplayText(newText[counter])
-            counter++;
-        }, 1000/(wpm/60));
+            var tempWords = [];
+
+            if (startIndex < newText.length) {
+
+                for (var i = 0; i < wordsPerGroup; i++) {
+                    //console.log(`Start index + i = : ` + (startIndex + i));
+
+                    if ((startIndex + i) < newText.length) {
+
+                        console.log("I am functioning in the for loop")
+                        tempWords += newText[(startIndex + i)] + ` `;
+                    }
+                }
+                console.log(tempWords);
+
+                setDisplayText(tempWords);
+                startIndex += parseInt(wordsPerGroup);
+                //console.log(startIndex)
+            }
+        }, 1000 / (wpm / 60));
     }
 
     function handleTextChange(event) {
@@ -41,15 +61,15 @@ const InputBox = () => {
     }
 
     function handleWordPerGroupChange(event) {
-        const tempWordPerGroup = event.target.value;
+        var tempWordPerGroup = parseInt(event.target.value);
         setWordsPerGroup(tempWordPerGroup);
     }
 
-    function validateMinMax(e,min,max) {
+    function validateMinMax(e, min, max) {
 
         const thingToBeValidated = e.target.value;
         if (thingToBeValidated > max || thingToBeValidated < min) {
-            alert(`Please enter a number in between `+ min + ` and ` + max);
+            alert(`Please enter a number in between ` + min + ` and ` + max);
         }
     }
 
@@ -103,7 +123,7 @@ const InputBox = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Modal heading</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> { DisplayText } </Modal.Body>
+                <Modal.Body> {DisplayText} </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
