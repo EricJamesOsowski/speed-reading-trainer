@@ -11,9 +11,14 @@ const InputBox = () => {
     const [DisplayText, setDisplayText] = useState([]);
     const [wpm, setWpm] = useState(250);
     const [wordsPerGroup, setWordsPerGroup] = useState(1);
+    const [intervalVariable, setIntervalVariable] = useState(0);
 
-    const handleClose = () => setShow(false);
-    var startIndex = 0;
+
+    //const handleClose = () => setShow(false);
+    function handleClose() {
+        setShow(false)
+        clearInterval(intervalVariable);
+    }
 
 
     function handleShow() {
@@ -21,46 +26,52 @@ const InputBox = () => {
         updateWord();
     }
 
+
     function updateWord() {
+        var startIndex = 0;
         var newText = text.split(" ");
+        clearInterval(intervalVariable);
 
-        //PSUEEEEDOUUUUUUUUUUCCCKKKKK
-
-
-        setInterval(function () {
+        var intervalId = setInterval(function () {
+            
             var tempWords = [];
 
             if (startIndex < newText.length) {
+
 
                 for (var i = 0; i < wordsPerGroup; i++) {
                     //console.log(`Start index + i = : ` + (startIndex + i));
 
                     if ((startIndex + i) < newText.length) {
-
-                        console.log("I am functioning in the for loop")
                         tempWords += newText[(startIndex + i)] + ` `;
+                        console.log(tempWords)
                     }
                 }
-                console.log(tempWords);
 
                 setDisplayText(tempWords);
                 startIndex += parseInt(wordsPerGroup);
-                //console.log(startIndex)
             }
-        }, 1000 / (wpm / 60));
+
+
+        }, 1000 / (wpm / wordsPerGroup / 60));
+
+        setIntervalVariable(intervalId);
     }
 
     function handleTextChange(event) {
+
         const words = event.target.value;
         setText(words);
     }
 
     function handleWpmChange(event) {
+
         const tempWpm = event.target.value;
         setWpm(tempWpm);
     }
 
     function handleWordPerGroupChange(event) {
+
         var tempWordPerGroup = parseInt(event.target.value);
         setWordsPerGroup(tempWordPerGroup);
     }
@@ -106,7 +117,7 @@ const InputBox = () => {
                 <input type="text" onChange={handleTextChange}></input>
                 <br />
                 <br />
-                <input type="range" onChange={handleWpmChange} placeholder="140" value={wpm} min="100" max="1000" class="slider" id="myRange" />
+                <input type="range" onChange={handleWpmChange} placeholder="140" value={wpm} min="100" max="1000" className="slider" id="myRange" />
 
                 <p>WPM is:&nbsp;
                     <input type="number" onBlur={(e) => { validateAndClampWpm(e, 100, 1000) }} value={wpm} onChange={handleWpmChange} min="100" max="1000" />
