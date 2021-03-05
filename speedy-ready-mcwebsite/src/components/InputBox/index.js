@@ -8,54 +8,85 @@ import "./style.css";
 const InputBox = () => {
     const [show, setShow] = useState(false);
     const [text, setText] = useState("");
-    const [DisplayText, setDisplayText] = useState([]);
+    const [displayText, setDisplayText] = useState([]);
     const [wpm, setWpm] = useState(250);
     const [wordsPerGroup, setWordsPerGroup] = useState(1);
     const [intervalVariable, setIntervalVariable] = useState(0);
+    const [secondIntervalVariable, setSecondIntervalVariable] = useState(0);
 
+    var countdownFlag = 5;
 
-    //const handleClose = () => setShow(false);
     function handleClose() {
         setShow(false)
         clearInterval(intervalVariable);
     }
-
 
     function handleShow() {
         setShow(true);
         updateWord();
     }
 
+    function startCountdown() {
+        function countdown() {
+            if (countdownFlag >= 0) {
+                if (countdownFlag != 0) {
+                setDisplayText(countdownFlag)
+                }
+                countdownFlag--;
+            }
+            else {
+                return;
+            }
+        }
+
+        if (countdownFlag > 0) {
+
+            var countdownId = setInterval(function () {
+                countdown();
+            }, 1000);
+
+            setSecondIntervalVariable(countdownId)
+
+        }
+    }
 
     function updateWord() {
+        setDisplayText("");
         var startIndex = 0;
         var newText = text.split(" ");
+        clearInterval(secondIntervalVariable);
         clearInterval(intervalVariable);
 
+        startCountdown();
+
         var intervalId = setInterval(function () {
-            
+
             var tempWords = [];
 
-            if (startIndex < newText.length) {
+            if (countdownFlag < 0) {
 
+                if (startIndex < newText.length) {
 
-                for (var i = 0; i < wordsPerGroup; i++) {
-                    //console.log(`Start index + i = : ` + (startIndex + i));
+                    for (var i = 0; i < wordsPerGroup; i++) {
 
-                    if ((startIndex + i) < newText.length) {
-                        tempWords += newText[(startIndex + i)] + ` `;
-                        console.log(tempWords)
+                        if ((startIndex + i) < newText.length) {
+                            tempWords += newText[(startIndex + i)] + ` `;
+                        }
+
                     }
+
+                    setDisplayText(tempWords);
+                    startIndex += parseInt(wordsPerGroup);
                 }
 
-                setDisplayText(tempWords);
-                startIndex += parseInt(wordsPerGroup);
+                else {
+                    setDisplayText("Finished!")
+                }
             }
-
-
         }, 1000 / (wpm / wordsPerGroup / 60));
 
         setIntervalVariable(intervalId);
+
     }
 
     function handleTextChange(event) {
@@ -120,11 +151,11 @@ const InputBox = () => {
                 <input type="range" onChange={handleWpmChange} placeholder="140" value={wpm} min="100" max="1000" className="slider" id="myRange" />
 
                 <p>WPM is:&nbsp;
-                    <input type="number" onBlur={(e) => { validateAndClampWpm(e, 100, 1000) }} value={wpm} onChange={handleWpmChange} min="100" max="1000" />
+                    <input type="number" inputmode="numeric" onBlur={(e) => { validateAndClampWpm(e, 100, 1000) }} value={wpm} onChange={handleWpmChange} min="100" max="1000" />
                 </p>
                 <br />
                 <p>How many flashers do you want flashed at you per flash?&nbsp;
-                    <input type="number" value={wordsPerGroup} onChange={handleWordPerGroupChange} onBlur={(e) => { validateAndClampGrouping(e, 1, 10) }} min="1" max="10" />
+                    <input type="number" inputmode="numeric" value={wordsPerGroup} onChange={handleWordPerGroupChange} onBlur={(e) => { validateAndClampGrouping(e, 1, 10) }} min="1" max="10" />
                 </p>
             </form>
 
@@ -134,7 +165,7 @@ const InputBox = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Modal heading</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> {DisplayText} </Modal.Body>
+                <Modal.Body className="centered-text modal-small" > {displayText} </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
