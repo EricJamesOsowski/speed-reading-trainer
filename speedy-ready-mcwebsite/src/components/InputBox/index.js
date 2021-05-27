@@ -11,10 +11,8 @@ const InputBox = () => {
   const [displayText, setDisplayText] = useState([]);
   const [wpm, setWpm] = useState(250);
   const [wordsPerGroup, setWordsPerGroup] = useState(1);
-  const [intervalVariable, setIntervalVariable] = useState(0);
   const [secondIntervalVariable, setSecondIntervalVariable] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
-  const [count, setCount] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
   const [newText, setNewText] = useState([]);
   const countRef = React.useRef(null);
@@ -30,9 +28,6 @@ const InputBox = () => {
     clearInterval(countRef.current);
     setIsPaused(true);
   }
-
-  // TODO TODO TODO TODO TODO TODO TODO
-  // get handleResume work as expected
 
   function handleResume() {
     setIsPaused(false);
@@ -53,14 +48,12 @@ const InputBox = () => {
         if (startIndex < newText.length) {
           for (var i = 0; i < wordsPerGroup; i++) {
             if (startIndex + i < newText.length) {
-              //   console.log("Assigning temp-words");
               tempWords += newText[startIndex + i] + ` `;
             }
 
             setDisplayText(tempWords);
-            console.log("words per group is: " + parseInt(wordsPerGroup));
-
             incrementStartIndex();
+
           }
         } else {
           setDisplayText("Finished!");
@@ -73,7 +66,6 @@ const InputBox = () => {
     }
     return () => clearInterval(interval);
   }, [isPaused, startIndex]);
-  // TODO TODO TODO TODO TODO TODO TODOTODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
 
   function startCountdown() {
     function countdown() {
@@ -85,11 +77,9 @@ const InputBox = () => {
       } else if (countdownFlag == 0) {
         setDisplayText("Go!");
 
-        console.log("This should fire once");
         setIsPaused(false);
         clearInterval(secondIntervalVariable);
         clearInterval(countdownId);
-        // return;
       }
     }
 
@@ -104,54 +94,14 @@ const InputBox = () => {
 
   function updateWord() {
     setStartIndex(0);
-    // alert("I have set startindex to : ", startIndex)
-
     setDisplayText("");
 
     clearInterval(secondIntervalVariable);
-    clearInterval(intervalVariable);
     startCountdown();
-
-    // TODO work useInterval instead of setInterval.
-    // thisIsTheTempShit();
   }
 
-  //   function thisIsTheTempShit() {
-  //     countRef.current = setInterval(() => {
-  //       var tempWords = [];
-  //       if (countdownFlag < 0) {
-
-  //         if (startIndex < newText.length) {
-  //           for (var i = 0; i < wordsPerGroup; i++) {
-  //             if (startIndex + i < newText.length) {
-  //             //   console.log("Assigning temp-words");
-  //               tempWords += newText[startIndex + i] + ` `;
-  //             }
-
-  //             setDisplayText(tempWords);
-  //             console.log("words per group is: " + parseInt(wordsPerGroup));
-
-  //             incrementStartIndex();
-  //           }
-  //         } else {
-  //           setDisplayText("Finished!");
-  //           setIsPaused(true);
-  //           clearInterval(countRef.current);
-  //         }
-  //       }
-  //     }, 1000 / (wpm / wordsPerGroup / 60));
-  //   }
-
   function incrementStartIndex() {
-    console.log("Previous start index :", startIndex);
-    // await setStartIndex(startIndex + parseInt(wordsPerGroup));
-
     setStartIndex((startIndex) => startIndex + parseInt(wordsPerGroup));
-    console.log("New start index :", startIndex);
-
-    // await setStartIndex(state => ({count: state.count+1}));
-    // // execution will only resume here once state has been applied
-    // console.log(this.state.count);  // output will be 1
   }
 
   useEffect(() => {
@@ -202,26 +152,14 @@ const InputBox = () => {
 
   return (
     <div className="inputBox" id="input-box">
-      <h1>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Eget duis at tellus at urna condimentum mattis pellentesque. Tincidunt tortor aliquam nulla facilisi cras. Enim blandit volutpat maecenas volutpat. Pellentesque adipiscing commodo elit at imperdiet dui accumsan sit. Diam sollicitudin tempor id eu. Egestas diam in arcu cursus. Senectus et netus et malesuada fames ac. Vitae tempus quam pellentesque nec nam aliquam sem et tortor. Vitae tortor condimentum lacinia quis vel eros donec ac. Lacus luctus accumsan tortor posuere. Non nisi est sit amet facilisis magna etiam tempor. Quisque non tellus orci ac auctor. Pharetra vel turpis nunc eget. Egestas tellus rutrum tellus pellentesque eu tincidunt tortor.
-      </h1>
+      <h1>Paste your text below and click start to begin!</h1>
+<textarea onChange={handleTextChange} className="text-input-box">Paste whatever text you would like to speed read into this box. You can also choose how many words you would like displayed at a time, so that you can work on expanding your peripheral grouping.
+</textarea>
+  <br />
+  <br />
       <form>
-        <input type="text" onChange={handleTextChange}></input>
-        <br />
-        <br />
-        <input
-          type="range"
-          onChange={handleWpmChange}
-          placeholder="140"
-          value={wpm}
-          min="100"
-          max="1000"
-          className="slider"
-          id="myRange"
-        />
-
         <p>
-          WPM is:&nbsp;
+          Words Per Minute:&nbsp;
           <input
             type="number"
             inputmode="numeric"
@@ -235,9 +173,20 @@ const InputBox = () => {
           />
         </p>
 
+        <input
+          type="range"
+          onChange={handleWpmChange}
+          placeholder="140"
+          value={wpm}
+          min="100"
+          max="1000"
+          className="slider"
+          id="myRange"
+        />
         <br />
+
         <p>
-          How many flashers do you want flashed at you per flash?&nbsp;
+          Words Per Group&nbsp;
           <input
             type="number"
             inputmode="numeric"
@@ -253,7 +202,7 @@ const InputBox = () => {
       </form>
 
       <button onClick={handleShow}>
-        Click Me If'n your ready to experience the SPEED of READ!
+        Start
       </button>
 
       <Modal show={show} onHide={handleClose}>
@@ -263,10 +212,6 @@ const InputBox = () => {
         <Modal.Body className="centered-text modal-small">
           {" "}
           {displayText}
-          <br />
-          {startIndex}
-          <br />
-          {isPaused.toString()}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -275,11 +220,11 @@ const InputBox = () => {
 
           {isPaused ? (
             <Button variant="primary" onClick={handleResume}>
-              RESUME FOR THE LOVE OF FUCK
+              Resume
             </Button>
           ) : (
             <Button variant="primary" onClick={handlePause}>
-              PAUSE FOR THE LOVE OF FUCK
+              Pause
             </Button>
           )}
         </Modal.Footer>

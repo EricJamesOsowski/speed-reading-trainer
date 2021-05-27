@@ -6,3 +6,9 @@
 .modal-small {
     min-height:60px;
 }
+
+.text-input-box{
+    width:469px;
+    resize:both;
+    overflow:auto;
+}
