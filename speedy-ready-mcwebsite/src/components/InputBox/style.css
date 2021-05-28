@@ -12,3 +12,22 @@
     resize:both;
     overflow:auto;
 }
+
+.rsvp-text-container{
+    background-color:gainsboro;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center; /* Horizontal center alignment */
+    height: 333px;
+}
+
+.rsvp-controller{
+    border-style:solid;
+    width:80%;
+    margin:auto;
+    border-width:2px;
+    border-radius:5px;
+    display: flex;
+    align-items: center; /* Vertical center alignment */
+    justify-content: center; /* Horizontal center alignment */
+}

@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
 import React, { useState, useEffect, useRef } from "react";
-import ReactDOM from "react-dom";
+import { GiPlayButton, GiPauseButton } from "react-icons/gi";
 
 const InputBox = () => {
   const [show, setShow] = useState(false);
@@ -15,7 +15,10 @@ const InputBox = () => {
   const [isPaused, setIsPaused] = useState(true);
   const [startIndex, setStartIndex] = useState(0);
   const [newText, setNewText] = useState([]);
+  const [showRsvp, setShowRsvp] = useState(false);
+  const [fontSize, setFontSize] = useState(12);
   const countRef = React.useRef(null);
+
 
   var countdownFlag = 3;
 
@@ -34,8 +37,7 @@ const InputBox = () => {
   }
 
   function handleShow() {
-    
-    setShow(true);
+    setShowRsvp(true);
     updateWord();
   }
 
@@ -52,9 +54,9 @@ const InputBox = () => {
             }
 
             setDisplayText(tempWords);
-            incrementStartIndex();
-
           }
+          incrementStartIndex();
+
         } else {
           setDisplayText("Finished!");
           setIsPaused(true);
@@ -101,12 +103,13 @@ const InputBox = () => {
   }
 
   function incrementStartIndex() {
+    console.log(startIndex+ " Plus "+ parseInt(wordsPerGroup));
     setStartIndex((startIndex) => startIndex + parseInt(wordsPerGroup));
   }
 
   useEffect(() => {
+    console.log(newText);
     setNewText(text.split(" "));
-    console.log("newText is: ", newText);
   }, [text]);
 
   function handleTextChange(event) {
@@ -155,6 +158,7 @@ const InputBox = () => {
       <h1>Paste your text below and click start to begin!</h1>
 <textarea onChange={handleTextChange} className="text-input-box">Paste whatever text you would like to speed read into this box. You can also choose how many words you would like displayed at a time, so that you can work on expanding your peripheral grouping.
 </textarea>
+<p>Total # of words: { newText.length }</p>
   <br />
   <br />
       <form>
@@ -202,16 +206,29 @@ const InputBox = () => {
       </form>
 
       <button onClick={handleShow}>
-        Start
+        Rapid Sub Visual Presentation
       </button>
+      <br />
+ 
+    <span className="rsvp-text-container" style={{ display: showRsvp ? 'flex' : "none" }} >
+    {displayText}
+    </span>
+    <br style={{ display: showRsvp ? 'flex' : "none" }}/>
+    <span className="rsvp-controller" style={{ display: showRsvp ? 'flex' : "none" }} >
+    CONTROOLL BOX
+    </span>
+
+    <button onClick={() => showRsvp ?  setShowRsvp(false) : setShowRsvp(true)}>
+        Flipppity the hiding
+      </button>
+      <br />
 
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
         <Modal.Body className="centered-text modal-small">
           {" "}
           {displayText}
+          <br />
+          { startIndex }
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -220,11 +237,11 @@ const InputBox = () => {
 
           {isPaused ? (
             <Button variant="primary" onClick={handleResume}>
-              Resume
+              <GiPlayButton />
             </Button>
           ) : (
             <Button variant="primary" onClick={handlePause}>
-              Pause
+              <GiPauseButton />
             </Button>
           )}
         </Modal.Footer>
