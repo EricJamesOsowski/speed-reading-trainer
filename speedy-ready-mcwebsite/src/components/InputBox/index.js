@@ -4,17 +4,21 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./style.css";
 import React, { useState, useEffect, useRef } from "react";
 import { GiPlayButton, GiPauseButton } from "react-icons/gi";
+import { GoTextSize } from "react-icons/go";
+import { BsFillSkipStartFill } from "react-icons/bs"
+import { VscDebugRestart } from "react-icons/vsc"
 
 const InputBox = () => {
   const [show, setShow] = useState(false);
   const [text, setText] = useState("");
   const [displayText, setDisplayText] = useState([]);
+  const [sliderText, setSliderText] = useState([]);
   const [wpm, setWpm] = useState(250);
   const [wordsPerGroup, setWordsPerGroup] = useState(1);
   const [secondIntervalVariable, setSecondIntervalVariable] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
   const [startIndex, setStartIndex] = useState(0);
-  const [newText, setNewText] = useState([]);
+  const [newText, setNewText] = useState(["butterball"]);
   const [showRsvp, setShowRsvp] = useState(false);
   const [fontSize, setFontSize] = useState(12);
   const countRef = React.useRef(null);
@@ -42,6 +46,7 @@ const InputBox = () => {
   }
 
   useEffect(() => {
+    setNewText(["Paste", "whatever", "text", "you", "would", "like", "to", "speed", "read", "into", "this", "box.", "You", "can", "also", "choose", "how", "many", "words", "you", "would", "like", "displayed", "at", "a", "time,", "so", "that", "you", "can", "work", "on", "expanding", "your", "peripheral", "grouping."]);
     let interval = null;
     if (!isPaused) {
       interval = setInterval(() => {
@@ -103,8 +108,7 @@ const InputBox = () => {
   }
 
   function incrementStartIndex() {
-    console.log(startIndex+ " Plus "+ parseInt(wordsPerGroup));
-    setStartIndex((startIndex) => startIndex + parseInt(wordsPerGroup));
+    setStartIndex((startIndex) => parseInt(startIndex) + parseInt(wordsPerGroup));
   }
 
   useEffect(() => {
@@ -152,6 +156,23 @@ const InputBox = () => {
     validateMinMax(e, min, max);
     setWordsPerGroup(clampMinMax(e, min, max));
   }
+
+  function openFontMenu () {
+    alert("You did it!");
+  }
+
+function handleResetStart (newText) {
+  setStartIndex(0);
+  setDisplayText(newText[0]);
+}
+
+function handlePositionSlider ( event ) {
+  const tempPlace = event.target.value;
+  setStartIndex(tempPlace);
+
+
+  setDisplayText(newText[tempPlace]);
+}
 
   return (
     <div className="inputBox" id="input-box">
@@ -213,9 +234,37 @@ const InputBox = () => {
     <span className="rsvp-text-container" style={{ display: showRsvp ? 'flex' : "none" }} >
     {displayText}
     </span>
+    <p>Start Index: {startIndex}</p>
     <br style={{ display: showRsvp ? 'flex' : "none" }}/>
     <span className="rsvp-controller" style={{ display: showRsvp ? 'flex' : "none" }} >
-    CONTROOLL BOX
+
+    {/* CONTROOLL BOX */}
+    <button className="outlined-button" variant="gray" onClick={handleResetStart}>
+   <VscDebugRestart />
+    </button>
+
+    {isPaused ? (
+            <button className="outlined-button" variant="gray" onClick={handleResume}>
+              <GiPlayButton  />
+            </button>
+          ) : (
+            <button className="outlined-button" variant="gray" onClick={handlePause}>
+              <GiPauseButton  />
+            </button>
+          )}
+
+          <input 
+          type="range" 
+          min="0" 
+          max={ newText.length }
+          onChange={ handlePositionSlider }
+          value={startIndex}
+          />
+         
+            <button className="outlined-button">
+          <GoTextSize onClick={openFontMenu}></GoTextSize>
+          </button>
+         
     </span>
 
     <button onClick={() => showRsvp ?  setShowRsvp(false) : setShowRsvp(true)}>

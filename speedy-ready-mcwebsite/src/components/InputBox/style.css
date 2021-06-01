@@ -31,3 +31,11 @@
     align-items: center; /* Vertical center alignment */
     justify-content: center; /* Horizontal center alignment */
 }
+
+.outlined-button {
+    border-width:2px;
+    border-radius:5px;
+    border-style:solid;
+    font-size: large;
+    margin: 0px 2px 0px 2px;
+}
