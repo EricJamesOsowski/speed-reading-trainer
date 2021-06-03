@@ -5,12 +5,15 @@ import "./style.css";
 import React, { useState, useEffect, useRef } from "react";
 import { GiPlayButton, GiPauseButton } from "react-icons/gi";
 import { GoTextSize } from "react-icons/go";
-import { BsFillSkipStartFill } from "react-icons/bs"
-import { VscDebugRestart } from "react-icons/vsc"
+import { BsFillSkipStartFill } from "react-icons/bs";
+import { VscDebugRestart } from "react-icons/vsc";
+import ControlBox from "../ControlBox";
 
 const InputBox = () => {
   const [show, setShow] = useState(false);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(
+    "Paste whatever text you would like to speed read into this box. You can also choose how many words you would like displayed at a time, so that you can work on expanding your peripheral grouping."
+  );
   const [displayText, setDisplayText] = useState([]);
   const [sliderText, setSliderText] = useState([]);
   const [wpm, setWpm] = useState(250);
@@ -18,11 +21,10 @@ const InputBox = () => {
   const [secondIntervalVariable, setSecondIntervalVariable] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
   const [startIndex, setStartIndex] = useState(0);
-  const [newText, setNewText] = useState(["butterball"]);
+  const [newText, setNewText] = useState([]);
   const [showRsvp, setShowRsvp] = useState(false);
   const [fontSize, setFontSize] = useState(12);
   const countRef = React.useRef(null);
-
 
   var countdownFlag = 3;
 
@@ -46,7 +48,6 @@ const InputBox = () => {
   }
 
   useEffect(() => {
-    setNewText(["Paste", "whatever", "text", "you", "would", "like", "to", "speed", "read", "into", "this", "box.", "You", "can", "also", "choose", "how", "many", "words", "you", "would", "like", "displayed", "at", "a", "time,", "so", "that", "you", "can", "work", "on", "expanding", "your", "peripheral", "grouping."]);
     let interval = null;
     if (!isPaused) {
       interval = setInterval(() => {
@@ -61,7 +62,6 @@ const InputBox = () => {
             setDisplayText(tempWords);
           }
           incrementStartIndex();
-
         } else {
           setDisplayText("Finished!");
           setIsPaused(true);
@@ -108,12 +108,14 @@ const InputBox = () => {
   }
 
   function incrementStartIndex() {
-    setStartIndex((startIndex) => parseInt(startIndex) + parseInt(wordsPerGroup));
+    setStartIndex(
+      (startIndex) => parseInt(startIndex) + parseInt(wordsPerGroup)
+    );
   }
 
   useEffect(() => {
-    console.log(newText);
     setNewText(text.split(" "));
+    console.log(newText);
   }, [text]);
 
   function handleTextChange(event) {
@@ -157,31 +159,22 @@ const InputBox = () => {
     setWordsPerGroup(clampMinMax(e, min, max));
   }
 
-  function openFontMenu () {
-    alert("You did it!");
-  }
-
-function handleResetStart (newText) {
-  setStartIndex(0);
-  setDisplayText(newText[0]);
-}
-
-function handlePositionSlider ( event ) {
-  const tempPlace = event.target.value;
-  setStartIndex(tempPlace);
 
 
-  setDisplayText(newText[tempPlace]);
-}
+
+
 
   return (
     <div className="inputBox" id="input-box">
       <h1>Paste your text below and click start to begin!</h1>
-<textarea onChange={handleTextChange} className="text-input-box">Paste whatever text you would like to speed read into this box. You can also choose how many words you would like displayed at a time, so that you can work on expanding your peripheral grouping.
-</textarea>
-<p>Total # of words: { newText.length }</p>
-  <br />
-  <br />
+      <textarea onChange={handleTextChange} className="text-input-box">
+        Paste whatever text you would like to speed read into this box. You can
+        also choose how many words you would like displayed at a time, so that
+        you can work on expanding your peripheral grouping.
+      </textarea>
+      <p>Total # of words: {newText.length}</p>
+      <br />
+      <br />
       <form>
         <p>
           Words Per Minute:&nbsp;
@@ -226,48 +219,24 @@ function handlePositionSlider ( event ) {
         </p>
       </form>
 
-      <button onClick={handleShow}>
-        Rapid Sub Visual Presentation
-      </button>
+      <button onClick={handleShow}>Rapid Sub Visual Presentation</button>
       <br />
- 
-    <span className="rsvp-text-container" style={{ display: showRsvp ? 'flex' : "none" }} >
-    {displayText}
-    </span>
-    <p>Start Index: {startIndex}</p>
-    <br style={{ display: showRsvp ? 'flex' : "none" }}/>
-    <span className="rsvp-controller" style={{ display: showRsvp ? 'flex' : "none" }} >
 
-    {/* CONTROOLL BOX */}
-    <button className="outlined-button" variant="gray" onClick={handleResetStart}>
-   <VscDebugRestart />
-    </button>
+      <span
+        className="rsvp-text-container"
+        style={{ display: showRsvp ? "flex" : "none" }}
+      >
+        {displayText}
+      </span>
+      <p>Start Index: {startIndex}</p>
+      <br style={{ display: showRsvp ? "flex" : "none" }} />
+      
 
-    {isPaused ? (
-            <button className="outlined-button" variant="gray" onClick={handleResume}>
-              <GiPlayButton  />
-            </button>
-          ) : (
-            <button className="outlined-button" variant="gray" onClick={handlePause}>
-              <GiPauseButton  />
-            </button>
-          )}
+      <ControlBox />
 
-          <input 
-          type="range" 
-          min="0" 
-          max={ newText.length }
-          onChange={ handlePositionSlider }
-          value={startIndex}
-          />
-         
-            <button className="outlined-button">
-          <GoTextSize onClick={openFontMenu}></GoTextSize>
-          </button>
-         
-    </span>
-
-    <button onClick={() => showRsvp ?  setShowRsvp(false) : setShowRsvp(true)}>
+      <button
+        onClick={() => (showRsvp ? setShowRsvp(false) : setShowRsvp(true))}
+      >
         Flipppity the hiding
       </button>
       <br />
@@ -277,7 +246,7 @@ function handlePositionSlider ( event ) {
           {" "}
           {displayText}
           <br />
-          { startIndex }
+          {startIndex}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
